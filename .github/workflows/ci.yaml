@@ -11,7 +11,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Lint Code
         run: echo "Linting code..."
 
@@ -19,7 +19,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build
         run: echo "Build code..."
 
@@ -28,7 +28,7 @@ jobs:
     needs: [lint, build]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Run E2E Tests
         run: echo "Running end-to-end tests..."
 
@@ -41,7 +41,7 @@ jobs:
       packages: write
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
