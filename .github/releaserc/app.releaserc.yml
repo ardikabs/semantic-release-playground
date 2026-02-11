@@ -1,9 +1,9 @@
 branches:
-- "main"
+- {"name": "main", "channel":"latest"}
 - {
     "name": "release/v+([0-9]).+([0-9])",
-    "range": "${1}.${2}.x",
-    "channel": "${1}.${2}.x"
+    "range": "1.0.x",
+    "channel": "1.0.x",
   }
 
 tagFormat: "v${version}"
