@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hibernator-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: hibernator
+data:
+  # 1. Simple key-value pairs
+  LOG_LEVEL: "info"
+  MAX_RETRIES: "5"
+
+  # 2. Multi-line configuration file (using the | operator)
+  app-config.yaml: |
+    server:
+      port: 8080
+      timeout: 30s
+    features:
+      enable_auto_sleep: true

@@ -1,0 +1,145 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'release/v*'
+
+jobs:
+  release-app:
+    name: Release Application
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: write
+      pull-requests: write
+    outputs:
+      new_release_published: ${{ steps.semantic.outputs.new_release_published }}
+      new_release_version: ${{ steps.semantic.outputs.new_release_version }}
+      last_release_version: ${{ steps.semantic.outputs.last_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Semantic Release (App)
+        id: semantic
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          semantic_version: 23
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+            @semantic-release/exec
+            conventional-changelog-conventionalcommits
+          config_file: .releaserc.app.json
+
+      # --- Metadata & Caching Improvements ---
+      - name: Docker Metadata
+        if: steps.semantic.outputs.new_release_published == 'true'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ steps.semantic.outputs.new_release_version }}
+            type=raw,value=latest
+
+      - name: Set up QEMU
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Packaging App
+        if: steps.semantic.outputs.new_release_published == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          target: controller
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ steps.semantic.outputs.new_release_version }}
+
+  release-chart:
+    name: Release Helm Chart
+    needs: release-app
+    # Run even if release-app didn't publish, because chart changes might exist independently
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # IMPORTANT: Pull latest changes to get the commit from release-app if it ran
+      - name: Pull latest changes
+        run: git pull origin ${GITHUB_REF#refs/heads/} || true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Semantic Release (Chart)
+        id: semantic-chart
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          semantic_version: 23
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+            @semantic-release/exec
+            conventional-changelog-conventionalcommits
+          config_file: .releaserc.chart.json
+
+      - name: Install Helm
+        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Login to GitHub Container Registry (Helm OCI)
+        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and Push Helm Chart
+        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        run: |
+          helm package charts/dummy --version ${{ steps.semantic-chart.outputs.new_release_version }} --app-version ${{ steps.semantic-chart.outputs.new_release_version }}
+          helm push dummy-${{ steps.semantic-chart.outputs.new_release_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts

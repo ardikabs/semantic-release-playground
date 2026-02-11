@@ -1,0 +1,14 @@
+apiVersion: v2
+name: semantic-release-playground
+description: A Helm chart for Semantic Release Playground - A playground for semantic-release automation
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - dummy
+home: https://github.com/ardikabs/semantic-release-playground
+sources:
+  - https://github.com/ardikabs/semantic-release-playground
+maintainers:
+  - name: Ardika Saputro
+    email: me@ardikabs.com
