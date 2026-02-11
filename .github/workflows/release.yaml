@@ -25,6 +25,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install Helm Docs
+        uses: gabe565/setup-helm-docs-action@v1
+        with:
+          version: v1.14.2
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
