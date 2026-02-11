@@ -27,8 +27,12 @@ plugins:
 - [
     "@semantic-release/git",
     {
-      "assets": ["charts/dummy/Chart.yaml", "charts/dummy/README.md"],
-      "message": "chore(charts): update appVersion to ${nextRelease.version} [skip ci]"
+      "assets": [
+        "charts/dummy/Chart.yaml",
+        "charts/dummy/README.md",
+        "CHANGELOG.md"
+      ],
+      "message": "chore(release): ${nextRelease.version} [skip ci]\n${nextRelease.notes}"
     }
   ]
 - "@semantic-release/github"
