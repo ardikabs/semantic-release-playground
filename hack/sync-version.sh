@@ -14,7 +14,7 @@ if [ -z "$VERSION" ] || [ -z "$TYPE" ]; then
   exit 1
 fi
 
-CHART_FILE="charts/hibernator/Chart.yaml"
+CHART_FILE="charts/dummy/Chart.yaml"
 
 if [ ! -f "$CHART_FILE" ]; then
   echo "Error: $CHART_FILE not found"
