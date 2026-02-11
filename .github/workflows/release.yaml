@@ -30,19 +30,21 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup Semantic Release Config for App
+        run: cp .github/releaserc/app.releaserc.yml .releaserc.yml
+
       - name: Semantic Release (App)
         id: semantic
         uses: cycjimmy/semantic-release-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          semantic_version: 23
+          semantic_version: 24
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
             @semantic-release/exec
             conventional-changelog-conventionalcommits
-          config_file: .releaserc.app.json
 
       # --- Metadata & Caching Improvements ---
       - name: Docker Metadata
@@ -120,19 +122,21 @@ jobs:
         with:
           node-version: 20
 
+      - name: Setup Semantic Release Config for App
+        run: cp .github/releaserc/chart.releaserc.yml .releaserc.yml
+
       - name: Semantic Release (Chart)
         id: semantic-chart
         uses: cycjimmy/semantic-release-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          semantic_version: 23
+          semantic_version: 24
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
             @semantic-release/exec
             conventional-changelog-conventionalcommits
-          config_file: .releaserc.chart.json
 
       - name: Login to GitHub Container Registry (Helm OCI)
         if: steps.semantic-chart.outputs.new_release_published == 'true'
