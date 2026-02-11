@@ -1,5 +1,11 @@
 branches:
-- "release/v+([0-9]).+([0-9])"
+- "main"
+- {
+    "name": "release/v+([0-9]).+([0-9])",
+    "range": "${1}.${2}.x",
+    "channel": "${1}.${2}.x"
+  }
+- v+([0-9]).+([0-9]).+([0-9])
 
 tagFormat: "v${version}"
 
@@ -16,21 +22,31 @@ plugins:
       ]
     }
   ]
-- "@semantic-release/release-notes-generator"
+- [
+    "@semantic-release/release-notes-generator",
+    "presetConfig": {
+      "types": [
+        { "type": "feat", "section": "✨ Features", "hidden": false },
+        { "type": "fix", "section": "🐛 Bug Fixes", "hidden": false },
+        { "type": "perf", "section": "🚀 Performance Improvements", "hidden": false },
+        { "type": "chore", "section": "🧹 Miscellaneous", "hidden": false }
+      ]
+    }
+  ]
 - "@semantic-release/changelog"
 - [
     "@semantic-release/exec",
     {
-      "prepareCmd": "./hack/sync-version.sh ${nextRelease.version} app"
+      "prepareCmd": "echo ${nextRelease.version} > VERSION",
+      "successCmd": "git fetch origin main && git checkout main && git merge ${branch.name} --no-edit && git push origin main"
     }
   ]
 - [
     "@semantic-release/git",
     {
       "assets": [
-        "charts/dummy/Chart.yaml",
-        "charts/dummy/README.md",
-        "CHANGELOG.md"
+        "CHANGELOG.md",
+        "VERSION",
       ],
       "message": "chore(release): ${nextRelease.version} [skip ci]\n${nextRelease.notes}"
     }

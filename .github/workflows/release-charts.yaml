@@ -1,0 +1,75 @@
+name: Helm Chart Release
+
+on:
+  push:
+    branches:
+      - undefined
+    paths:
+      - charts/
+
+jobs:
+  release-chart:
+    name: Release Helm Chart
+    # Run even if release-app didn't publish, because chart changes might exist independently
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # IMPORTANT: Pull latest changes to get the commit from release-app if it ran
+      - name: Pull latest changes
+        run: git pull origin ${GITHUB_REF#refs/heads/} || true
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Install Helm Docs
+        uses: gabe565/setup-helm-docs-action@v1
+        with:
+          version: v1.14.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Setup Semantic Release Config for App
+        run: cp .github/releaserc/chart.releaserc.yml .releaserc.yml
+
+      - name: Semantic Release (Chart)
+        id: semantic-chart
+        uses: cycjimmy/semantic-release-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          semantic_version: 24
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
+            @semantic-release/exec
+            conventional-changelog-conventionalcommits
+
+      - name: Login to GitHub Container Registry (Helm OCI)
+        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and Push Helm Chart
+        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        run: |
+          helm package charts/dummy --version ${{ steps.semantic-chart.outputs.new_release_version }} --app-version ${{ steps.semantic-chart.outputs.new_release_version }}
+          helm push dummy-${{ steps.semantic-chart.outputs.new_release_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts

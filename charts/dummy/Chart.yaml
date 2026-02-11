@@ -1,5 +1,5 @@
 apiVersion: v2
-name: semantic-release-playground
+name: dummy
 description: A Helm chart for Semantic Release Playground - A playground for semantic-release automation
 type: application
 version: 0.1.0
