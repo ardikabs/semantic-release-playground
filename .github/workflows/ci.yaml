@@ -11,7 +11,8 @@ on:
       - "release/v*"
     paths-ignore:
       - README.md
-      - charts
+      - charts/**
+      - hack/CHART_README.md.gotmpl
 
 jobs:
   lint:
