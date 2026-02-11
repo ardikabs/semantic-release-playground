@@ -6,7 +6,7 @@ on:
       - main
       - 'release/v*'
     paths:
-      - charts/
+      - charts/**
       - hack/CHART_README.md.gotmpl
 
 jobs:
