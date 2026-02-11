@@ -6,3 +6,5 @@ echo "This is a new feature as reported in issue#2"
 
 echo "testing"
 echo "feature"
+
+echo "fix for v1.0"
