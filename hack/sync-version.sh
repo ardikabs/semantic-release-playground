@@ -42,3 +42,7 @@ else
 fi
 
 echo "Successfully updated $CHART_FILE"
+
+echo >&2 "Updating Helm Chart README.md..."
+
+helm-docs -t hack/HELM_CHART_README.md.gotmpl -c charts
