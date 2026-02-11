@@ -36,6 +36,7 @@ plugins:
     "@semantic-release/exec",
     {
       "prepareCmd": "echo ${nextRelease.version} > VERSION",
+      "generateNotesCmd": "./hack/sync-version.sh ${nextRelease.version} app"
     }
   ]
 - [
@@ -43,6 +44,8 @@ plugins:
     {
       "assets": [
         "VERSION",
+        "charts/dummy/Chart.yaml",
+        "charts/dummy/README.gotmpl"
       ],
       "message": "chore(release): ${nextRelease.version} [skip ci]\n${nextRelease.notes}"
     }

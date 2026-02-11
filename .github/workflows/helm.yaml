@@ -3,9 +3,11 @@ name: Helm Chart Release
 on:
   push:
     branches:
-      - undefined
+      - main
+      - 'release/v*'
     paths:
       - charts/
+      - hack/CHART_README.md.gotmpl
 
 jobs:
   release-chart:
@@ -48,7 +50,7 @@ jobs:
         run: cp .github/releaserc/chart.releaserc.yml .releaserc.yml
 
       - name: Semantic Release (Chart)
-        id: semantic-chart
+        id: semantic
         uses: cycjimmy/semantic-release-action@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -61,7 +63,7 @@ jobs:
             conventional-changelog-conventionalcommits
 
       - name: Login to GitHub Container Registry (Helm OCI)
-        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        if: steps.semantic.outputs.new_release_published == 'true'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -69,7 +71,8 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Package and Push Helm Chart
-        if: steps.semantic-chart.outputs.new_release_published == 'true'
+        if: steps.semantic.outputs.new_release_published == 'true'
         run: |
-          helm package charts/dummy --version ${{ steps.semantic-chart.outputs.new_release_version }} --app-version ${{ steps.semantic-chart.outputs.new_release_version }}
-          helm push dummy-${{ steps.semantic-chart.outputs.new_release_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
+          git fetch --tags
+          helm package charts/dummy --version ${{ steps.semantic.outputs.new_release_version }} --app-version $(git describe --tags --abbrev=0 --match "v*")
+          helm push dummy-${{ steps.semantic.outputs.new_release_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
