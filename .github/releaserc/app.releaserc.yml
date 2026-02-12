@@ -43,7 +43,6 @@ plugins:
     "@semantic-release/git",
     {
       "assets": [
-        "VERSION",
         "charts/dummy/Chart.yaml",
         "charts/dummy/README.gotmpl"
       ],

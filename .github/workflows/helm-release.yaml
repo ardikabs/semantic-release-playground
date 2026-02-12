@@ -49,6 +49,10 @@ jobs:
       - name: Setup Semantic Release Config for App
         run: cp .github/releaserc/chart.releaserc.yml .releaserc.yml
 
+      - name: Fetch Latest Tags
+        run: |
+          git fetch --tags
+
       - name: Semantic Release (Chart)
         id: semantic
         uses: cycjimmy/semantic-release-action@v6
