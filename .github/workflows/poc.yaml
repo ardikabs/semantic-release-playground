@@ -1,0 +1,14 @@
+name: Release Application
+
+run-name: Release - ${{ format('{0}',github.event.repository.updated_at) }}
+
+on:
+  workflow_dispatch:
+
+jobs:
+  poc:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
