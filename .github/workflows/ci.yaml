@@ -5,6 +5,11 @@ on:
     branches:
       - main
       - "release/v*"
+    paths-ignore:
+      - README.md
+      - charts/**
+      - hack/CHART_README.md.gotmpl
+
   pull_request:
     branches:
       - main
