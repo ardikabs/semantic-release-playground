@@ -1,8 +1,8 @@
 branches:
 - "main"
-- name": "release/v+([0-9]).+([0-9])"
-  range": '${major}.${minor}.x'
-  channel": '${major}.${minor}.x'
+- name": "release/v1.1"
+  range": "1.1.x"
+  channel: "1.1"
 
 tagFormat: "v${version}"
 
