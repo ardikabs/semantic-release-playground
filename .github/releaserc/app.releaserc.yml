@@ -1,6 +1,6 @@
 branches:
 - "main"
-- name": "release/v1.1"
+- name: "release/v1.1"
   range": "1.1.x"
   channel: "1.1"
 
