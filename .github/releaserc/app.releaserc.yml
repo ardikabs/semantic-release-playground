@@ -1,5 +1,5 @@
 branches:
-- "main"
+- name: "${GITHUB_REF_NAME}"
 - name: "release/v+([0-9]).+([0-9])"
   range: "${name.replace('release/v', '') + '.x'}"
   channel: "${name.replace('release/v', '')}"
