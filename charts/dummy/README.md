@@ -20,3 +20,4 @@ A Helm chart for Semantic Release Playground - A playground for semantic-release
 | data.NO_CONTENT | string | `"JUST DUMMY"` |  |
 | data.TESTING | string | `"2nd"` |  |
 | data.TESTING_again | string | `"3rd"` |  |
+

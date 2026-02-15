@@ -136,3 +136,24 @@ jobs:
           git fetch --tags
           helm package charts/dummy --version ${{ steps.semantic.outputs.new_release_version }} --app-version $(git describe --tags --abbrev=0 --match "v*")
           helm push dummy-${{ steps.semantic.outputs.new_release_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts
+
+      - name: Chart Release
+        uses: softprops/action-gh-release@v2
+        if: steps.semantic.outputs.new_release_published == 'true'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          name: "Helm Chart v${{ steps.semantic.outputs.new_release_version }}"
+          tag_name: "chart-v${{ steps.semantic.outputs.new_release_version }}"
+          body: |
+            ${{ steps.semantic.outputs.new_release_notes }}
+
+            ## 📦 Get the Chart
+            The Dummy chart is now available as an OCI artifact via GHCR. Install it with a single command:
+
+            ```bash
+            helm install dummy oci://ghcr.io/${{ github.repository_owner }}/charts/dummy --version ${{ steps.semantic.outputs.new_release_version }}
+            ```
+
+          generate_release_notes: true
+          prerelease: false
+          make_latest: false

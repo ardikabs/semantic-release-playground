@@ -16,9 +16,19 @@ plugins:
     }
   ]
 - [
+    "@semantic-release/release-notes-generator",
+    "presetConfig": {
+      "types": [
+        { "type": "feat", "section": "✨ Features", "hidden": false },
+        { "type": "fix", "section": "🐛 Bug Fixes", "hidden": false },
+        { "type": "chore", "section": "🧹 Miscellaneous", "hidden": false }
+      ]
+    }
+  ]
+- [
     "@semantic-release/exec",
     {
-      "prepareCmd": "./hack/sync-version.sh ${nextRelease.version} chart"
+      "generateNotesCmd": "./hack/sync-version.sh ${nextRelease.version} chart"
     }
   ]
 - [
@@ -31,4 +41,3 @@ plugins:
       "message": "chore(charts): ${nextRelease.version} [skip ci]\n${nextRelease.notes}"
     }
   ]
-- "@semantic-release/github"
