@@ -1,5 +1,7 @@
 name: Release
 
+run-name: Release - ${{ format('{0}',github.event.repository.updated_at) }}
+
 on:
   push:
     branches:
@@ -8,9 +10,9 @@ on:
 
 jobs:
   release:
-    name: Release Application
+    name: Release
     if: |
-      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/v'))
     runs-on: ubuntu-latest
     permissions:
