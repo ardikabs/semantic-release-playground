@@ -6,7 +6,7 @@ NEXT_VERSION=$1
 GIT_TAG=$2
 
 msg () {
-  echo >&2 "[$(date +'%I:%M:%S %p')] [auto-release-branch] $*"
+  echo >&2 "[$(date +'%-I:%M:%S %p')] [auto-release-branch] $*"
 }
 
 if [ -z "$NEXT_VERSION" ] || [ -z "$GIT_TAG" ]; then
