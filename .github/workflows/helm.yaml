@@ -156,4 +156,4 @@ jobs:
 
           generate_release_notes: true
           prerelease: false
-          make_latest: false
+          make_latest: "false"
