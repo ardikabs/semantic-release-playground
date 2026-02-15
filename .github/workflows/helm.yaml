@@ -154,7 +154,6 @@ jobs:
             helm install dummy oci://ghcr.io/${{ github.repository_owner }}/charts/dummy --version ${{ steps.semantic.outputs.new_release_version }}
             ```
 
-          generate_release_notes: true
           prerelease: false
           draft: false
           make_latest: "false"

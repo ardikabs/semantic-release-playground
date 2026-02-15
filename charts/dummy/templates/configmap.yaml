@@ -18,4 +18,4 @@ data:
     features:
       enable_auto_sleep: true
 
-  breaking: "Yes"
+  breaking: "yes"
