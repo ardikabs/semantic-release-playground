@@ -17,3 +17,5 @@ data:
       timeout: 30s
     features:
       enable_auto_sleep: true
+
+  breaking: "Yes"
