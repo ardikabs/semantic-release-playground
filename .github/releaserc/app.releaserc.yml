@@ -1,6 +1,8 @@
 branches:
 - "main"
-- "release/v+([0-9]).+([0-9])"
+- name: "release/v+([0-9]).+([0-9])"
+  range: "${name.replace('release/v', '') + '.x'}"
+  channel: "${name.replace('release/v', '')}"
 
 tagFormat: "v${version}"
 
