@@ -43,6 +43,8 @@ if [[ "$BRANCH" =~ ^release/v([0-9]+)\.([0-9]+)$ ]]; then
   LATEST_MINOR=$(echo "$LATEST_VERSION" | cut -d. -f2)
 
   if [[ "$MINOR" -eq "$LATEST_MINOR" ]]; then
+    msg "Branch is referring to the latest stable release v${MAJOR}.${MINOR}."
+    msg "Skipping as the maintenance must be done from v${MAJOR} branch."
     echo "skip=true"
     exit 0
   fi
