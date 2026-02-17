@@ -23,8 +23,9 @@ jobs:
 
           # Optional: Disallow scopes that are not relevant (e.g., only allow 'charts', 'api', etc.)
           scopes: |
-            charts
             app
+            charts
+            release
 
           # Configure which types are allowed.
           types: |
