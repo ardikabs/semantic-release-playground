@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+basename="${0##*/}"
+scriptname="${basename%.*}"
+
 # Usage: ./hack/sync-version.sh <version> <type>
 # <version>: The semantic version (e.g., 1.2.3)
 # <type>: "app" or "chart"
@@ -9,7 +12,7 @@ VERSION=$1
 TYPE=$2
 
 msg () {
-  echo >&2 "[$(date +'%-I:%M:%S %p')] [sync-version] $*"
+  echo >&2 "[$(date +'%-I:%M:%S %p')] [$scriptname] $*"
 }
 
 if [ -z "$VERSION" ] || [ -z "$TYPE" ]; then

@@ -5,15 +5,12 @@ run-name: Release - ${{ format('{0}',github.event.repository.updated_at) }}
 on:
   push:
     branches:
+      - 'v*'
       - 'release/v*'
-  workflow_dispatch:
 
 jobs:
   release:
     name: Release
-    if: |
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/v'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -27,20 +24,29 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Release Guard
+        id: guard
+        run: |
+          ./hack/release-guard.sh "${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
+
       - name: Setup Node.js
+        if: steps.guard.outputs.skip == 'false'
         uses: actions/setup-node@v6
         with:
           node-version: 20
 
       - name: Install Helm Docs
+        if: steps.guard.outputs.skip == 'false'
         uses: gabe565/setup-helm-docs-action@v1
         with:
           version: v1.14.2
 
       - name: Setup Semantic Release Config for App
-        run: envsubst < .github/releaserc/app.releaserc.yml > .releaserc.yml
+        if: steps.guard.outputs.skip == 'false'
+        run: cp .github/releaserc/app.releaserc.yml .releaserc.yml
 
       - name: Semantic Release (App)
+        if: steps.guard.outputs.skip == 'false'
         id: semantic
         uses: cycjimmy/semantic-release-action@v6
         env:
