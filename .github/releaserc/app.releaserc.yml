@@ -45,7 +45,7 @@ plugins:
     {
       "prepareCmd": "echo ${nextRelease.version} > VERSION",
       "generateNotesCmd": "./hack/sync-version.sh ${nextRelease.version} app",
-      "publishCmd": "./hack/auto-release-branch.sh ${nextRelease.version} ${nextRelease.gitTag}"
+      "publishCmd": "./hack/create-maintenance-branch.sh ${lastRelease.version} ${nextRelease.version}"
     }
   ]
 - [
