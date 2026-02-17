@@ -5,3 +5,4 @@ echo "After thorough testing, this feature has a bug, this is the fix"
 echo "While we are not done an official release, the requirement changed, so we this is the feature to satisfy the new requirement"
 
 echo "testing sek"
+echo "another patch for this feature"
