@@ -64,7 +64,7 @@ plugins:
     "@semantic-release/github",
     {
       "assets": [
-        {"path": "dist/dummy/${nextRelease.version}/*.sh", "label": "Magic Script"}
+        {"path": "dist/dummy/**/*.sh"}
       ]
     }
   ]
