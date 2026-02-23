@@ -45,7 +45,8 @@ plugins:
     {
       "prepareCmd": "echo ${nextRelease.version} > VERSION",
       "generateNotesCmd": "./hack/sync-version.sh ${nextRelease.version} app",
-      "publishCmd": "./hack/create-maintenance-branch.sh ${lastRelease.version} ${nextRelease.version}"
+      "publishCmd": "./hack/create-dish.sh ${nextRelease.version}",
+      "successCmd": "./hack/create-maintenance-branch.sh ${lastRelease.version} ${nextRelease.version}"
     }
   ]
 - [
@@ -59,4 +60,11 @@ plugins:
       "message": "chore(release): ${nextRelease.version} [skip ci]\n${nextRelease.notes}"
     }
   ]
-- "@semantic-release/github"
+- [
+    "@semantic-release/github",
+    {
+      "assets": [
+        {"path": "dist/dummy/${nextRelease.version}/*.sh", "label": "Magic Script"}
+      ]
+    }
+  ]
