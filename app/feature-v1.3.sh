@@ -7,3 +7,4 @@ echo "While we are not done an official release, the requirement changed, so we 
 echo "testing sek"
 echo "another patch for this feature"
 echo "and another patch for this feature"
+echo "a patch for this feature"
