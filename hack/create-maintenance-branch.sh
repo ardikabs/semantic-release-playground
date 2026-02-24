@@ -21,9 +21,6 @@ fi
 CLEAN_INPUT="${INPUT_VERSION#v}"
 V_INPUT="v$CLEAN_INPUT"
 
-# Extract patch from input (e.g., 0 from 1.4.0)
-PATCH=$(echo "$CLEAN_INPUT" | cut -d. -f3)
-
 msg "Fetching tags from remote..."
 git fetch --tags --quiet >/dev/null
 
