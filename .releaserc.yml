@@ -28,11 +28,8 @@ plugins:
     "@semantic-release/release-notes-generator",
     {
       "preset": "conventionalcommits",
+      "config": "./.github/releaserc/config/release-notes-config.js",
       "presetConfig": {
-        "scope": [
-          "app",
-          "deps",
-        ],
         "types": [
           {"type": "feat", "section": "✨ Features", "hidden": false },
           {"type": "fix", "section": "🐛 Bug Fixes", "hidden": false },

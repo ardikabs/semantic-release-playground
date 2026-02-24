@@ -44,3 +44,5 @@ EOF
 done
 
 echo -e "\nSuccessfully generated all scripts in $TARGET_DIR"
+
+echo "new_release_git_sha_short=$COMMIT_HASH" >> "${GITHUB_OUTPUT:-/dev/null}"

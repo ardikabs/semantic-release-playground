@@ -96,7 +96,7 @@ jobs:
           push: true
           build-args: |
             VERSION=${{ steps.semantic.outputs.new_release_version }}
-            COMMIT_HASH=${{ steps.semantic.outputs.new_release_git_head }}
+            COMMIT_HASH=${{ steps.semantic.outputs.new_release_git_sha_short }}
           annotations: ${{ steps.meta.outputs.annotations }}
           labels: ${{ steps.meta.outputs.labels }}
           tags: ${{ steps.meta.outputs.tags }}
