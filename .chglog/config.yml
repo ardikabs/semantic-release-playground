@@ -13,10 +13,7 @@ options:
         - fix
         - perf
         - refactor
-      Scope:
-        - ""
-        - app
-        - deps
+        - chore
   commit_groups:
     title_maps:
       feat: ✨ Features
