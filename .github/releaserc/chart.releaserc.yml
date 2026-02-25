@@ -5,7 +5,7 @@ tagFormat: "chart-v${version}"
 
 plugins:
 - [
-    "semantic-release-scope-filter",
+    "./.github/releaserc/plugins/scope-filter.cjs",
     {
       "scopes": ["charts"],
       "filterOutMissingScope": true

@@ -9,13 +9,7 @@ module.exports = {
         filterOutMissingScope = false
       } = pluginConfig;
 
-      if (!filterOutMissingScope) scopes.push("");
       const { logger } = context;
-
-      logger.log("Initializing Dual-Filter Scope Plugin...");
-      logger.log(`Allowed scopes: ${scopes}`);
-      logger.log(`Excluded scopes: ${excludeScopes}`);
-      logger.log(`Filter out missing scope: ${filterOutMissingScope}`);
 
       Object.keys(require.cache)
         .filter((m) =>
@@ -34,21 +28,43 @@ module.exports = {
               new Transform({
                 objectMode: true,
                 transform(chunk, enc, callback) {
-                  // Extract scope from Conventional Commit subject
-                  const scopeMatch = chunk.subject?.match(/^\w+\((.*?)\):/);
-                  const currentScope = scopeMatch ? scopeMatch[1] : "";
+                  const subject = chunk.subject || "";
 
-                  // 1️⃣ Exclusion (blocklist)
-                  if (excludeScopes.includes(currentScope)) {
+                  // 🔥 0️⃣ Global Skip Rules (highest priority)
+                  if (
+                    subject.includes("[skip release]") ||
+                    subject.includes("[skip ci]")
+                  ) {
                     logger.log(
-                      `[Filter] ❌ Blocked: ${chunk.commit.short} (scope "${currentScope}")`
+                      `[Filter] ⏭ Skipped: ${chunk.commit.short} (contains skip directive)`
                     );
                     return callback();
                   }
 
-                  // 2️⃣ Inclusion (allowlist)
-                  if (scopes !== null) {
-                    const allowed = [...scopes];
+                  // Extract scope from Conventional Commit subject
+                  const scopeMatch = subject.match(/^\w+\((.*?)\):/);
+                  const currentScope = scopeMatch ? scopeMatch[1] : "";
+
+                  const hasIncludeFilter = Array.isArray(scopes) && scopes.length > 0;
+                  const hasExcludeFilter = Array.isArray(excludeScopes) && excludeScopes.length > 0;
+
+                  // 🔥 If no filters at all → return early
+                  if (!hasIncludeFilter && !hasExcludeFilter) {
+                    this.push(chunk);
+                    return callback();
+                  }
+
+                  // 1️⃣ Exclusion (always priority if defined)
+                  if (hasExcludeFilter && excludeScopes.includes(currentScope)) {
+                    logger.log(
+                      `[Filter] ❌ Excluded: ${chunk.commit.short} (scope "${currentScope}")`
+                    );
+                    return callback();
+                  }
+
+                  // 2️⃣ Inclusion (only if defined)
+                  if (hasIncludeFilter) {
+                    const allowed = scopes.slice();
 
                     if (!filterOutMissingScope && !allowed.includes("")) {
                       allowed.push("");
