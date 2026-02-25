@@ -19,3 +19,4 @@ data:
       enable_auto_sleep: true
 
   breaking: "yes"
+  new: "yes"
