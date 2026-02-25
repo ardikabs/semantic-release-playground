@@ -2,8 +2,8 @@ apiVersion: v2
 name: dummy
 description: A Helm chart for Semantic Release Playground - A playground for semantic-release automation
 type: application
-version: 1.3.1
-appVersion: "1.4.0"
+version: 1.4.0
+appVersion: v1.4.0
 keywords:
   - dummy
 home: https://github.com/ardikabs/semantic-release-playground
