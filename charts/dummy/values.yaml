@@ -3,3 +3,4 @@ data:
   ANOTHER_NO_CONTENT: "yes"
   TESTING: 2nd
   TESTING_again: 3rd
+  new: variable

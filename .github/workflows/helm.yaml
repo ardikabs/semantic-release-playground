@@ -100,7 +100,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Setup Semantic Release Config for App
         run: cp .github/releaserc/chart.releaserc.yml .releaserc.yml
@@ -119,7 +119,6 @@ jobs:
           extra_plugins: |
             @semantic-release/git
             @semantic-release/exec
-            semantic-release-scope-filter
             conventional-changelog-conventionalcommits
 
       - name: Login to GitHub Container Registry (Helm OCI)
