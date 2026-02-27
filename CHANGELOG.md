@@ -1,4 +1,14 @@
 
+<a name="v1.4.1"></a>
+## [v1.4.1](https://github.com/ardikabs/semantic-release-playground/compare/v1.4.0...v1.4.1) (2026-02-27)
+
+### 🐛 Bug Fixes
+
+* patch for v1.4
+* another fix
+* **app:** a fix for v1.4
+
+
 <a name="v1.4.0"></a>
 ## [v1.4.0](https://github.com/ardikabs/semantic-release-playground/compare/v1.3.4...v1.4.0) (2026-02-25)
 
