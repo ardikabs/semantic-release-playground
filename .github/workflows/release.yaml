@@ -1,7 +1,12 @@
 name: Release
 
-run-name: Release - ${{ format('{0}',github.event.repository.updated_at) }}
-
+run-name: >-
+  ${{
+    github.event_name == 'workflow_dispatch' && format('🚀 Manual Release: {0}', github.event.inputs.reason) ||
+    github.event_name == 'push' && format('🛠️ Maintenance Patch: {0}', github.ref_name) ||
+    github.event_name == 'workflow_run' && format('🧪 RC Release: {0}', github.event.workflow_run.head_branch) ||
+    format('📦 Release - {0}', github.event.repository.updated_at)
+  }}
 on:
   push:
     branches:
@@ -14,13 +19,63 @@ on:
     types:
       - completed
 
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Provide a enough description for this release (e.g., "Release v1.5 <codename>").'
+        required: true
+        default: 'Standard release authorized from trunk.'
+
 jobs:
+  verification:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.logic.outputs.run }}
+    steps:
+      - name: Release Decision
+        id: logic
+        run: |
+          # Default to false
+          RUN_RELEASE=false
+
+          EVENT_NAME="${{ github.event_name }}"
+
+          if [[ "$EVENT_NAME" == "workflow_run" ]]; then
+            BRANCH="${{ github.event.workflow_run.head_branch }}"
+            MSG="${{ github.event.workflow_run.head_commit.message }}"
+
+            if [[ "$BRANCH" == "main" ]]; then
+              if echo "$MSG" | grep -Ei "(Release-As|Release-Channel):\s*(rc|release-candidate)" > /dev/null; then
+                echo "Match: main branch with valid Release marker found."
+                RUN_RELEASE=true
+              else
+                echo "No match found in commit message."
+              fi
+
+          elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
+            REF="${{ github.ref }}"
+
+            if [[ "$REF" == "main" ]]; then
+              echo "Match: Push to maintenance branch ($REF)."
+              RUN_RELEASE=true
+            fi
+
+          elif [[ "$EVENT_NAME" == "push" ]]; then
+            REF="${{ github.ref }}"
+
+            if [[ "$REF" == refs/heads/release/v* ]]; then
+              echo "Match: Push to maintenance branch ($REF)."
+              RUN_RELEASE=true
+            fi
+          fi
+
+          echo "Final Decision: should_release=$RUN_RELEASE"
+          echo "run=$RUN_RELEASE" >> $GITHUB_OUTPUT
+
   release:
     name: Release
-    if: |
-      (github.event_name == 'workflow_run' && github.ref == 'refs/heads/main') ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/v')) ||
-      (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/stable'))
+    needs: [verification]
+    if: needs.verification.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
