@@ -24,54 +24,28 @@ on:
       reason:
         description: 'Provide a enough description for this release (e.g., "Release v1.5 <codename>").'
         required: true
-        default: 'Standard release authorized from trunk.'
+        default: 'Next Release'
 
 jobs:
   verification:
+    name: Verification
     runs-on: ubuntu-latest
     outputs:
-      should_release: ${{ steps.logic.outputs.run }}
+      should_release: ${{ steps.decision.outputs.run }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - name: Release Decision
-        id: logic
+        id: decision
         run: |
-          # Default to false
-          RUN_RELEASE=false
-
-          EVENT_NAME="${{ github.event_name }}"
-
-          if [[ "$EVENT_NAME" == "workflow_run" ]]; then
-            BRANCH="${{ github.event.workflow_run.head_branch }}"
-            MSG="${{ github.event.workflow_run.head_commit.message }}"
-
-            if [[ "$BRANCH" == "main" ]]; then
-              if echo "$MSG" | grep -Ei "(Release-As|Release-Channel):\s*(rc|release-candidate)" > /dev/null; then
-                echo "Match: main branch with valid Release marker found."
-                RUN_RELEASE=true
-              else
-                echo "No match found in commit message."
-              fi
-            fi
-
-          elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
-            REF="${{ github.ref }}"
-
-            if [[ "$REF" == "main" ]]; then
-              echo "Match: Push to maintenance branch ($REF)."
-              RUN_RELEASE=true
-            fi
-
-          elif [[ "$EVENT_NAME" == "push" ]]; then
-            REF="${{ github.ref }}"
-
-            if [[ "$REF" == refs/heads/release/v* ]]; then
-              echo "Match: Push to maintenance branch ($REF)."
-              RUN_RELEASE=true
-            fi
-          fi
-
-          echo "Final Decision: should_release=$RUN_RELEASE"
-          echo "run=$RUN_RELEASE" >> $GITHUB_OUTPUT
+          chmod +x hack/release-gate.sh
+          ./hack/release-gate.sh \
+            --event "${{ github.event_name }}" \
+            --ref "${{ github.ref }}" \
+            --ref-name "${{ github.ref_name }}" \
+            --branch "${{ github.event.workflow_run.head_branch }}" \
+            --message "${{ github.event.workflow_run.head_commit.message }}"
 
   release:
     name: Release
