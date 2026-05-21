@@ -50,11 +50,9 @@ plugins:
 - [
     "@semantic-release/exec",
     {
-      "verifyReleaseCmd": "./hack/verify-release.sh ${nextRelease.type}",
       "prepareCmd": "echo ${nextRelease.version} > VERSION",
       "generateNotesCmd": "./hack/sync-version.sh ${nextRelease.version} app",
-      "publishCmd": "./hack/create-dist.sh ${nextRelease.version}",
-      "successCmd": "./hack/post-release-branch.sh ${nextRelease.version}"
+      "publishCmd": "./hack/create-dist.sh ${nextRelease.version}"
     }
   ]
 - [

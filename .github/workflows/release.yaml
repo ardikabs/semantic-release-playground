@@ -80,12 +80,12 @@ jobs:
 
       - name: Setup Semantic Release Config for App
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" || "${{ github.event_name }}" == "push" ]]; then
-            echo "Using STABLE configuration"
-            cp .github/releaserc/stable.releaserc.yml .releaserc.yml
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Using main configuration"
+            cp .github/releaserc/main.releaserc.yml .releaserc.yml
           else
-            echo "Using RC configuration"
-            cp .github/releaserc/rc.releaserc.yml .releaserc.yml
+            echo "Using app configuration"
+            cp .github/releaserc/app.releaserc.yml .releaserc.yml
           fi
 
       - name: Semantic Release (App)
