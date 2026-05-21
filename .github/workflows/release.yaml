@@ -5,7 +5,6 @@ run-name: Release - ${{ format('{0}',github.event.repository.updated_at) }}
 on:
   push:
     branches:
-      - "stable"
       - "release/v*"
 
   workflow_run:
@@ -66,10 +65,13 @@ jobs:
             conventional-changelog-conventionalcommits
 
   publish-image:
-    name: Release Image
+    name: Publish Container
     runs-on: ubuntu-latest
     needs: release
     if: needs.release.outputs.new_release_published == 'true'
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v6
