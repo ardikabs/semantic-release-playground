@@ -10,6 +10,8 @@ on:
 
   workflow_run:
     workflows: ["CI"] # Must match the 'name' of Workflow A
+    branches:
+      - main
     types:
       - completed
 
@@ -17,7 +19,7 @@ jobs:
   release:
     name: Release
     if: |
-      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' && github.ref == 'refs/heads/main') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/release/v')) ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/stable'))
     runs-on: ubuntu-latest
