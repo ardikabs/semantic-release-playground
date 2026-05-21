@@ -1,4 +1,5 @@
 branches:
+  - stable
   - name: 'main'
     prerelease: 'rc'
   - name: "release/v+([0-9]).+([0-9])"
