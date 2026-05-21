@@ -51,6 +51,7 @@ jobs:
               else
                 echo "No match found in commit message."
               fi
+            fi
 
           elif [[ "$EVENT_NAME" == "workflow_dispatch" ]]; then
             REF="${{ github.ref }}"
