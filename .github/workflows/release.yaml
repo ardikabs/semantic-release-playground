@@ -80,27 +80,8 @@ jobs:
 
       - name: Setup Semantic Release Config for App
         run: |
-<<<<<<< Updated upstream
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            echo "Using RC configuration"
-            cp .github/releaserc/rc.releaserc.yml .releaserc.yml
-          else
-            echo "Using Stable configuration"
-            cp .github/releaserc/stable.releaserc.yml .releaserc.yml
-
-            # 1. Extract the Major.Minor from branch name (e.g., release/v1.7 -> 1.7)
-            # If on 'main', we'll use a dummy range so semantic-release doesn't error
-            if [[ "${{ github.ref_name }}" == release/v* ]]; then
-              VAL=$(echo "${{ github.ref_name }}" | sed 's/release\/v//')
-              sed -i "s/\${name.replace('release\/v', '')}/${VAL}/g" .releaserc.yml
-              sed -i "s/\${name.replace('release\/v', '')}/${VAL}/g" .releaserc.yml
-            fi
-
-          fi
-=======
           chmod +x hack/generate-releaserc.sh
           ./hack/generate-releaserc.sh "${{ github.ref_name }}" "${{ github.event_name }}"
->>>>>>> Stashed changes
           cat .releaserc.yml
 
       - name: Semantic Release (App)
