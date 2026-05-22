@@ -80,6 +80,7 @@ jobs:
 
       - name: Setup Semantic Release Config for App
         run: |
+<<<<<<< Updated upstream
           if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
             echo "Using RC configuration"
             cp .github/releaserc/rc.releaserc.yml .releaserc.yml
@@ -96,6 +97,10 @@ jobs:
             fi
 
           fi
+=======
+          chmod +x hack/generate-releaserc.sh
+          ./hack/generate-releaserc.sh "${{ github.ref_name }}" "${{ github.event_name }}"
+>>>>>>> Stashed changes
           cat .releaserc.yml
 
       - name: Semantic Release (App)
