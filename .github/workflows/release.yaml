@@ -57,6 +57,8 @@ jobs:
       packages: write
       issues: write
       pull-requests: write
+    env:
+      IS_MANUAL_RELEASE: ${{ github.event_name == 'workflow_dispatch' }}
     outputs:
       new_release_published: ${{ steps.semantic.outputs.new_release_published }}
       new_release_version: ${{ steps.semantic.outputs.new_release_version }}
@@ -80,14 +82,16 @@ jobs:
 
       - name: Setup Semantic Release Config for App
         run: |
-          if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
-            echo "Using RC configuration"
-            cp .github/releaserc/rc.releaserc.yml .releaserc.yml
-          else
-            echo "Using Stable configuration"
-            cp .github/releaserc/stable.releaserc.yml .releaserc.yml
-          fi
-          cat .releaserc.yml
+          # if [[ "${{ github.event_name }}" == "workflow_run" ]]; then
+          #   echo "Using RC configuration"
+          #   cp .github/releaserc/rc.releaserc.yml .releaserc.yml
+          # else
+          #   echo "Using Stable configuration"
+          #   cp .github/releaserc/stable.releaserc.yml .releaserc.yml
+          # fi
+          # cat .releaserc.yml
+
+          cp .github/releaserc/releaserc.js .releaserc.js
 
       - name: Semantic Release (App)
         id: semantic
