@@ -1,8 +1,8 @@
 branches:
   - main
-  - name: "release/v+([0-9]).+([0-9])"
-    range: "${name.replace('release/v', '')}.x"
-    channel: "${name.replace('release/v', '')}"
+  - name: "release/v1.8"
+    range: "1.8.x"
+    channel: "1.8"
 
 tagFormat: "v${version}"
 

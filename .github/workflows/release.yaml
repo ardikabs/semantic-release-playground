@@ -86,15 +86,6 @@ jobs:
           else
             echo "Using Stable configuration"
             cp .github/releaserc/stable.releaserc.yml .releaserc.yml
-
-            # 1. Extract the Major.Minor from branch name (e.g., release/v1.7 -> 1.7)
-            # If on 'main', we'll use a dummy range so semantic-release doesn't error
-            if [[ "${{ github.ref_name }}" == release/v* ]]; then
-              VAL=$(echo "${{ github.ref_name }}" | sed 's/release\/v//')
-              sed -i "s/\${name.replace('release\/v', '')}/${VAL}/g" .releaserc.yml
-              sed -i "s/\${name.replace('release\/v', '')}/${VAL}/g" .releaserc.yml
-            fi
-
           fi
           cat .releaserc.yml
 
