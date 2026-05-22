@@ -51,7 +51,7 @@ EOF
         # Automated (CI) on main: stable is baseline, main is RC
 cat <<EOF >> $TEMP_BRANCHES
   - {"name": "stable", "channel": "stable"}
-  - {"name": "main", "prerelease": "rc"}'
+  - {"name": "main", "prerelease": "rc"}
 EOF
     fi
 
