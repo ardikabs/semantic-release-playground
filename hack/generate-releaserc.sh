@@ -75,8 +75,6 @@ cat <<EOF >> $TEMP_BRANCHES
 EOF
 fi
 
-cat $TEMP_BRANCHES
-
 sed -e "/# BRANCHES_PLACEHOLDER/r $TEMP_BRANCHES" -e "/# BRANCHES_PLACEHOLDER/d" "$BASE_FILE" > .releaserc.yml
 rm $TEMP_BRANCHES
 
