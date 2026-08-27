@@ -29,7 +29,7 @@ jobs:
         if: |
           github.event.pull_request.merged == true &&
           github.event.pull_request.base.ref == 'main'
-        uses: ardikabs/actions/release/cherry-pick-hotfix@bf9a4a316d97522f9dbbaeb45ddd607b09aa3cae
+        uses: ardikabs/actions/release/cherry-pick-hotfix@2b62db69bf108250261f8fd9fde752bce8cd0532
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           mode: 'hotfix'
@@ -44,7 +44,7 @@ jobs:
         if: |
           github.event.pull_request.merged == true &&
           startsWith(github.event.pull_request.base.ref, 'release/')
-        uses: ardikabs/actions/release/cherry-pick-hotfix@bf9a4a316d97522f9dbbaeb45ddd607b09aa3cae
+        uses: ardikabs/actions/release/cherry-pick-hotfix@2b62db69bf108250261f8fd9fde752bce8cd0532
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           mode: 'completed'

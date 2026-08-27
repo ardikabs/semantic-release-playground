@@ -9,3 +9,5 @@ echo "The fix feature"
 echo "The new feature arrived"
 echo "The new feature is on the way"
 echo "A new feature"
+
+echo "really bad bug"
